@@ -49,17 +49,21 @@ def write_file(context, filepath, objects, scene, progress=ProgressReport()):
                 
                 limb = { 'origin': [x, y, z] }
                 transform = {
-                    'translate': [x * 16, y * 16, z * 16],
-                    'scale': [obj.scale[0], obj.scale[2], obj.scale[1]],
-                    'rotate': [obj.rotation_euler[0], obj.rotation_euler[2], obj.rotation_euler[1]]
+                    'translate': [x * 16, y * 16, z * 16]
                 }
                 
                 limbs[name] = limb
                 pose[name] = transform
             
             # Write JSON to the file
+            pose = {
+                'size': [0.6, 1.8, 0.6],
+                'limbs': pose
+            }
+            
             data = {
                 'scheme': "1.3",
+                'providesObj': True,
                 'name': path_leaf(filepath),
                 'limbs': limbs,
                 'poses': {
