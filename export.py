@@ -42,7 +42,15 @@ def write_file(context, filepath, objects, scene, progress=ProgressReport()):
                     continue
                 
                 print("over here")
-                name = name_compat(obj.name)
+                
+                name1 = obj.name
+                name2 = obj.data.name
+
+                if name1 == name2:
+                    name = name_compat(name1)
+                else:
+                    name = '%s_%s' % (name_compat(name1), name_compat(name2))
+                
                 x = obj.location[0]
                 y = obj.location[2]
                 z = obj.location[1]
