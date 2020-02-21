@@ -38,10 +38,7 @@ def write_file(context, filepath, objects, scene, progress=ProgressReport()):
 
             for obj in objects:
                 if obj.type != "MESH":
-                    print("here")
                     continue
-                
-                print("over here")
                 
                 name1 = obj.name
                 name2 = obj.data.name
@@ -55,7 +52,7 @@ def write_file(context, filepath, objects, scene, progress=ProgressReport()):
                 y = obj.location[2]
                 z = obj.location[1]
                 
-                limb = { 'origin': [x, y, z] }
+                limb = { 'origin': [x, y, -z] }
                 transform = {
                     'translate': [x * 16, y * 16, z * 16]
                 }
@@ -83,4 +80,5 @@ def write_file(context, filepath, objects, scene, progress=ProgressReport()):
             }
             
             f.write(json.dumps(data, indent=4, sort_keys=True))
+
         subprogress1.step("Finished exporting JSON")
