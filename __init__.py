@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Blockbuster JSON export",
     "author": "McHorse",
-    "version": (0, 1, 0),
+    "version": (0, 1, 1),
     "blender": (2, 77, 0),
     "location": "File > Export",
     "description": "Exports JSON model out of Blender document for Blockbuster mod. Its main task is to create limbs and poses configuration to avoid doing it by hand.",
