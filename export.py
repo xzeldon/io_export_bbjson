@@ -14,7 +14,7 @@ def path_leaf(path):
 def name_compat(name):
     return 'None' if name is None else name.replace(' ', '_')
 
-def save(context, filepath, use_selection=True):
+def save(context, filepath, use_selection=True, provides_mtl=False):
     with ProgressReport(context.window_manager) as progress:
         scene = context.scene
 
@@ -25,12 +25,14 @@ def save(context, filepath, use_selection=True):
         objects = context.selected_objects if use_selection else scene.objects
 
         progress.enter_substeps(1)
-        write_file(context, filepath, objects, scene, progress)
+        write_file(context, filepath, objects, scene, provides_mtl, progress)
         progress.leave_substeps()
 
     return {'FINISHED'}
 
-def write_file(context, filepath, objects, scene, progress=ProgressReport()):
+def write_file(context, filepath, objects, scene, provides_mtl, progress=ProgressReport()):
+    # bpy.ops.object.select_all(action='DESELECT')
+
     with ProgressReportSubstep(progress, 2, "JSON export path: %r" % filepath, "JSON export finished") as subprogress1:
         with open(filepath, "w", encoding="utf8", newline="\n") as f:
             limbs = {}
@@ -48,9 +50,10 @@ def write_file(context, filepath, objects, scene, progress=ProgressReport()):
                 else:
                     name = '%s_%s' % (name_compat(name1), name_compat(name2))
                 
-                x = obj.location[0]
-                y = obj.location[2]
-                z = obj.location[1]
+                cursor = obj.matrix_world.translation
+                x = cursor[0]
+                y = cursor[2]
+                z = cursor[1]
                 
                 limb = { 'origin': [x, y, -z] }
                 transform = {
@@ -69,6 +72,7 @@ def write_file(context, filepath, objects, scene, progress=ProgressReport()):
             data = {
                 'scheme': "1.3",
                 'providesObj': True,
+                'providesMtl': provides_mtl,
                 'name': path_leaf(filepath),
                 'limbs': limbs,
                 'poses': {
