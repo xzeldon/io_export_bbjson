@@ -10,8 +10,9 @@ bl_info = {
 }
 
 import bpy
-from bpy.props import (BoolProperty, FloatProperty, StringProperty, EnumProperty)
-from bpy_extras.io_utils import (ExportHelper, orientation_helper_factory, path_reference_mode, axis_conversion)
+
+from bpy.props import (BoolProperty, StringProperty)
+from bpy_extras.io_utils import (ExportHelper, path_reference_mode)
 
 # Export panel
 class ExportOBJ(bpy.types.Operator, ExportHelper):
@@ -46,12 +47,3 @@ def register():
 def unregister():
     bpy.utils.unregister_module(__name__)
     bpy.types.INFO_MT_file_export.remove(menu_func_export)
-
-if "bpy" in locals():
-    import importlib
-    
-    if "export_bobj" in locals():
-        importlib.reload(export_bobj)
-
-if __name__ == "__main__":
-    register()
