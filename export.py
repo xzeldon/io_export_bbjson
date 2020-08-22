@@ -35,7 +35,11 @@ def write_file(context, filepath, objects, scene, provides_mtl, progress=Progres
 
     with ProgressReportSubstep(progress, 2, "JSON export path: %r" % filepath, "JSON export finished") as subprogress1:
         with open(filepath, "w", encoding="utf8", newline="\n") as f:
-            limbs = {}
+            limbs = {
+                'anchor': {
+                    'opacity': 0
+                }
+            }
             pose = {}
 
             for obj in objects:
@@ -55,10 +59,34 @@ def write_file(context, filepath, objects, scene, provides_mtl, progress=Progres
                 y = cursor[2]
                 z = cursor[1]
                 
-                limb = { 'origin': [x, y, -z] }
+                limb = { 
+                    'origin': [x, y, -z],
+                    'smooth': True,
+                    'parent': 'anchor'
+                }
+
                 transform = {
                     'translate': [x * 16, y * 16, z * 16]
                 }
+
+                # Some automatic setup of limbs based on name
+                if name1 == 'head':
+                    limb['looking'] = True
+                elif name1 == 'left_arm':
+                    limb['holding'] = 'left'
+                    limb['swinging'] = True
+                    limb['idle'] = True
+                    limb['invert'] = True
+                elif name1 == 'right_arm':
+                    limb['holding'] = 'right'
+                    limb['swinging'] = True
+                    limb['idle'] = True
+                    limb['swiping'] = True
+                elif name1 == 'right_leg':
+                    limb['swinging'] = True
+                    limb['invert'] = True
+                elif name1 == 'left_leg':
+                    limb['swinging'] = True
                 
                 limbs[name] = limb
                 pose[name] = transform
@@ -83,6 +111,6 @@ def write_file(context, filepath, objects, scene, provides_mtl, progress=Progres
                 }
             }
             
-            f.write(json.dumps(data, indent=4, sort_keys=True))
+            f.write(json.dumps(data, indent=4))
 
         subprogress1.step("Finished exporting JSON")
